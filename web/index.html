@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#181818">
+  <title>工作流库</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/text-cover.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="工作流库首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M8 7h11v14H8zM8 14H3m16 0h6"/><circle cx="8" cy="7" r="3"/><circle cx="19" cy="21" r="3"/></svg></span><span>工作流库</span></a>
+      <div class="nav-caption">浏览</div>
+      <nav id="category-nav" aria-label="工作流分类"></nav>
+      <button id="add-category" class="add-category"><span aria-hidden="true">＋</span> 新建分类</button>
+      <div class="sidebar-bottom"><span class="local-dot"></span><span>本地工作流</span><button id="version" class="text-button" title="关于工作流库"></button></div>
+    </aside>
+    <main id="main" class="main-area">
+      <header class="page-header">
+        <div class="heading-line"><h1 id="page-title">全部工作流</h1><span id="workflow-count" class="count-label"></span></div>
+        <div class="header-actions"><span id="connection" class="connection" role="status"><span class="status-dot"></span><span>正在连接</span></span><button id="open-comfy" class="button secondary">打开 ComfyUI <span aria-hidden="true">↗</span></button><button id="import-button" class="button primary"><span aria-hidden="true">＋</span> 导入工作流</button><button id="close-library" class="icon-button library-close" aria-label="关闭工作流库，返回画布" title="返回画布" hidden>×</button></div>
+      </header>
+      <div class="toolbar">
+        <label class="search-field"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><input id="search" type="search" placeholder="搜索工作流" aria-label="搜索工作流" autocomplete="off"><kbd>/</kbd></label>
+        <div class="view-controls"><button id="play-dynamic" class="view-toggle" role="switch" aria-checked="true" hidden><span class="view-toggle-track" aria-hidden="true"></span>播放动态</button><button id="fill-covers" class="view-toggle" role="switch" aria-checked="false"><span class="view-toggle-track" aria-hidden="true"></span>填满封面</button><div id="cover-mode" class="cover-mode" role="group" aria-label="封面模式"><span class="cover-mode-thumb" aria-hidden="true"></span><button type="button" data-cover-mode="custom" aria-pressed="false">自定义</button><button type="button" data-cover-mode="workflow" aria-pressed="true">工作流</button><button type="button" data-cover-mode="text" aria-pressed="false">文字</button></div><label class="size-control" title="缩略图大小"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg><input id="card-size" type="range" min="260" max="560" value="440" aria-label="缩略图大小"></label><select id="sort" aria-label="工作流排序"><option value="modified">最近编辑</option><option value="lastUsed">最近使用</option><option value="name">名称排序</option></select><button id="refresh" class="icon-button" aria-label="刷新工作流" title="刷新工作流"><svg viewBox="0 0 20 20"><path d="M16.5 7a7 7 0 1 0 .2 5M17 3v5h-5"/></svg></button></div>
+      </div>
+      <div id="selection-actions" class="selection-actions"><span id="selection-name">未选中</span><button id="select-all" class="text-button">全选</button><button id="copy-selected" class="text-button" disabled>复制</button><button id="paste-selected" class="text-button" disabled>粘贴</button><span class="selection-divider"></span><button id="selected-text-cover" class="text-button" disabled>文字封面</button><button id="selected-preview" class="text-button" disabled>预览</button><button id="selected-cover" class="text-button" disabled>更换封面</button><button id="selected-edit" class="text-button" disabled>编辑信息</button><button id="selected-remove" class="text-button" disabled>移出</button></div>
+      <div id="load-error" class="load-error" hidden><span id="load-error-message"></span><button id="retry-load" class="text-button">重新连接</button></div>
+      <section id="gallery" class="gallery" aria-label="工作流列表" aria-busy="true"></section>
+      <div id="empty-state" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">⌘</span><h2 id="empty-title">还没有工作流</h2><p id="empty-description">将工作流 JSON 拖到这里，或点击“导入工作流”。</p></div>
+      <footer class="workspace-footer"><span id="footer-count">正在读取工作流…</span><span>单击选中 · 双击打开 · 拖图设置封面</span></footer>
+      <div id="drop-target" class="drop-target" hidden><div><span class="drop-symbol" aria-hidden="true">↓</span><h2>松开以收录工作流</h2><p>支持工作流 JSON 和 ComfyUI 工作流</p></div></div>
+    </main>
+  </div>
+  <div id="context-menu" class="context-menu" role="menu" hidden></div>
+  <dialog id="preview-dialog" class="preview-dialog">
+    <div class="preview-header"><div class="preview-heading"><h2 id="preview-title"></h2><p id="preview-meta"></p></div><button id="close-preview" class="icon-button close-button" aria-label="关闭预览">×</button></div>
+    <div class="preview-toolbar"><div class="segmented"><button id="show-graph" class="selected">工作流</button><button id="show-cover">封面</button></div><div class="zoom-controls"><button id="zoom-out" class="icon-button" aria-label="缩小">−</button><span id="zoom-value">100%</span><button id="zoom-in" class="icon-button" aria-label="放大">＋</button><button id="zoom-fit" class="text-button">适应窗口</button></div></div>
+    <div id="preview-viewport" class="preview-viewport"><div id="preview-content" class="preview-content"><div id="preview-vector" hidden></div><img id="preview-image" alt="工作流封面" draggable="false"><video id="preview-video" muted loop playsinline preload="none" hidden></video></div><div id="preview-loading" class="preview-loading"><span class="spinner"></span>正在载入预览</div><div id="preview-error" class="preview-error" hidden>预览载入失败，请重试。</div></div>
+    <div class="preview-footer"><span id="preview-path" class="preview-path"></span><div><button id="preview-edit" class="button secondary">编辑信息</button><button id="preview-open" class="button primary">在 ComfyUI 打开 <span aria-hidden="true">↗</span></button></div></div>
+  </dialog>
+  <dialog id="edit-dialog" class="form-dialog"><form id="edit-form"><div class="form-heading"><h2>编辑工作流</h2><button type="button" class="icon-button" data-close="edit-dialog" aria-label="关闭">×</button></div><label>名称<input id="edit-name" required maxlength="180" autocomplete="off"></label><label>分类<select id="edit-category"></select></label><div class="form-actions"><button type="button" class="button secondary" data-close="edit-dialog">取消</button><button type="submit" class="button primary">保存</button></div></form></dialog>
+  <dialog id="category-dialog" class="form-dialog"><form id="category-form"><div class="form-heading"><h2>新建分类</h2><button type="button" class="icon-button" data-close="category-dialog" aria-label="关闭">×</button></div><label>分类名称<input id="category-name" required maxlength="40" placeholder="例如：图像编辑" autocomplete="off"></label><div class="form-actions"><button type="button" class="button secondary" data-close="category-dialog">取消</button><button type="submit" class="button primary">创建分类</button></div></form></dialog>
+  <dialog id="text-cover-dialog" class="form-dialog text-cover-dialog"><form id="text-cover-form"><div class="form-heading"><h2 id="text-cover-heading">文字封面</h2><button type="button" class="icon-button" data-close="text-cover-dialog" aria-label="关闭">×</button></div><div id="text-cover-example" class="text-cover-example"></div><div id="text-cover-loading" class="text-cover-loading" hidden><span class="spinner"></span>正在整理文字…</div><label>标题<input id="text-cover-title" required maxlength="80" autocomplete="off"></label><label>副标题<input id="text-cover-subtitle" maxlength="160" autocomplete="off"></label><p id="text-cover-error" class="form-error" hidden></p><div class="form-actions"><button type="button" class="button secondary" data-close="text-cover-dialog">取消</button><button id="save-text-cover" type="submit" class="button primary">保存封面</button></div></form></dialog>
+  <dialog id="remove-dialog" class="form-dialog"><form id="remove-form"><div class="form-heading"><h2>移出工作流</h2><button type="button" class="icon-button" data-close="remove-dialog" aria-label="关闭">×</button></div><p id="remove-description" class="remove-description"></p><p class="remove-note">ComfyUI 原文件保留。</p><div class="form-actions"><button type="button" class="button secondary" data-close="remove-dialog">取消</button><button id="confirm-remove" type="submit" class="button primary">确认移出</button></div></form></dialog>
+  <input id="import-files" type="file" accept=".json,application/json" multiple hidden>
+  <input id="cover-file" type="file" accept="image/png,image/jpeg,image/webp,video/*,.mp4,.webm,.mov,.mkv,.m4v" hidden>
+  <div id="toast-area" class="toast-area" aria-live="polite" aria-atomic="false"></div>
+<dialog id="about-dialog" class="form-dialog"><div class="form-heading"><h2>工作流库 V1.5.0</h2><button class="icon-button" data-close="about-dialog" aria-label="关闭">×</button></div><p>独立保存你主动收录的工作流引用、分类和封面。</p><p><a href="https://github.com/BBAIGC/ComfyUI-Workflow-Library" target="_blank" rel="noopener">GitHub仓库</a> · <a href="https://github.com/BBAIGC/ComfyUI-Workflow-Library/releases" target="_blank" rel="noopener">检查更新</a></p><div class="about-qr"><img src="/assets/wechat-contact.png" alt="联系作者"><img src="/assets/wechat-support.jpg" alt="微信自愿支持"><img src="/assets/alipay-support.jpg" alt="支付宝自愿支持"></div></dialog>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

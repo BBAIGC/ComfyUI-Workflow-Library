@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文字封面效果</title>
+<link rel="stylesheet" href="/text-cover.css">
+<style>
+*{box-sizing:border-box}body{margin:0;padding:42px;background:#181818;color:#ececec;font:14px "Microsoft YaHei UI",sans-serif}h1{margin:0 0 26px;font-size:24px;font-weight:600}.demo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}.demo-tile{aspect-ratio:16/9;overflow:hidden;border-radius:5px;background:#fff}.demo-label{margin-top:11px;color:#aaa;font-size:12px}.demo-label span{color:#ddd}footer{margin-top:26px;color:#929292;font-size:12px}@media(max-width:900px){.demo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<h1>文字封面</h1>
+<main class="demo-grid" id="covers"></main>
+<footer>同一字体与标题位置 · 投影跟随文字字形 · 原有图片封面独立保留</footer>
+<script type="module" src="/text-cover-demo.js"></script>
+</html>
