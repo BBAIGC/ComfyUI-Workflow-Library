@@ -27,11 +27,12 @@ from datetime import datetime, timezone
 from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlsplit
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from media_covers import CoverError, resolve_media, prepare_image, prepare_video, VIDEO_EXTENSIONS
 from text_covers import suggestion as text_cover_suggestion, short_name as text_cover_short_name
 
-VERSION = "1.5.1"
+VERSION = "1.5.2"
 SERVICE = "comfy-workflow-library"
 REPOSITORY = "https://github.com/BBAIGC/ComfyUI-Workflow-Library"
 _UPDATE_LOCK = threading.Lock()
@@ -58,19 +59,30 @@ def check_updates(opener=urlopen, clock=time.monotonic):
         if _UPDATE_CACHE["checked_at"] and clock() - _UPDATE_CACHE["checked_at"] < 300:
             return {"version": VERSION, "repository": REPOSITORY, **_UPDATE_CACHE}
         try:
+            started = clock()
             request = Request("https://api.github.com/repos/BBAIGC/ComfyUI-Workflow-Library/releases/latest",
                               headers={"User-Agent": "BBAIGC-WorkflowLibrary/" + VERSION,
                                        "Accept": "application/vnd.github+json"})
-            with opener(request, timeout=8) as response:
-                raw = response.read(65537)
+            try:
+                with opener(request, timeout=8) as response:
+                    raw = response.read(65537)
+            except HTTPError as error:
+                if error.code not in (403, 429) or clock() - started >= 7:
+                    raise
+                # The anonymous GitHub API may be rate-limited. Use only this
+                # repository's public manifest, never local GitHub credentials.
+                fallback = Request("https://raw.githubusercontent.com/BBAIGC/ComfyUI-Workflow-Library/main/release.json",
+                                   headers={"User-Agent": "BBAIGC-WorkflowLibrary/" + VERSION})
+                with opener(fallback, timeout=max(1, 8 - (clock() - started))) as response:
+                    raw = response.read(65537)
             if len(raw) > 65536:
                 raise ValueError("release metadata too large")
             data = json.loads(raw)
-            match = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)", str(data.get("tag_name", "")))
+            match = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)", str(data.get("tag_name") or data.get("version", "")))
             if not match:
                 raise ValueError("invalid release tag")
             latest = ".".join(match.groups())
-            release_url = data.get("html_url", "")
+            release_url = data.get("html_url", REPOSITORY + "/releases/tag/v" + latest)
             if not isinstance(release_url, str) or not release_url.startswith(REPOSITORY + "/releases/tag/"):
                 release_url = REPOSITORY + "/releases"
             _UPDATE_CACHE.update(latest_version=latest,

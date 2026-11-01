@@ -6,5 +6,5 @@
 4. 检查插件`__init__.py`使用相对`start.ps1`，前端由`comfy_web`发布；实例内Python路径不同则设置`COMFYUI_PYTHON`。
 5. 个人元数据默认`user/workflow-library`，原工作流目录默认`user/default/workflows`。特殊目录使用环境变量，不把作者路径照抄到新电脑。
 6. 新装默认空收藏；不能复制作者data、分类、封面、输入输出或自用工作流。用户主动拖入、导入后才建立引用。
-7. 检查8190仅本机监听、状态接口返回`comfy-workflow-library`及V1.5.1。新增插件在ComfyUI下次正常启动后生效，不结束当前运行任务。
+7. 检查8190仅本机监听、状态接口返回`comfy-workflow-library`及V1.5.2。新增插件在ComfyUI下次正常启动后生效，不结束当前运行任务。
 8. 验证入口、空库、分类与导入操作；测试用临时无敏感JSON，不运行真实GPU工作流。最终报告实际路径、版本、验证结果和缺失项。
