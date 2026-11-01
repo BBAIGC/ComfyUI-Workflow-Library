@@ -1,6 +1,6 @@
 import { app } from '/scripts/app.js';
 
-// V1.5.0 — local, user-initiated workflow library integration.
+// V1.5.1 — local, user-initiated workflow library integration.
 const LIBRARY = 'http://127.0.0.1:8190';
 const INCOMING_MIME = 'application/x-codex-workflow-library';
 const OUTGOING_MIME = 'application/x-comfy-workflow';
@@ -729,7 +729,7 @@ async function libraryMessage(event) {
     libraryFrame.style.visibility = 'visible';document.getElementById('codex-workflow-library-loading')?.remove();
     const header = document.getElementById('codex-workflow-library-loading-header');
     if (header) header.style.display = 'none';
-    postLibrary('host-ready', {version:'1.5.0',clientId:CLIENT_ID});return;
+    postLibrary('host-ready', {version:'1.5.1',clientId:CLIENT_ID});return;
   }
   if (message.type === 'close') {closeLibrary();return;}
   if (message.type !== 'open') return;
@@ -784,7 +784,7 @@ function openLibrary() {
 function installSidebar() {
   const sheet = document.createElement('style');
   sheet.id = 'codex-workflow-library-icon-style';
-  const icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5h7l2 2H21v12H3z"/><path d="M7 11h4v4H7zM15 11h3M15 15h3"/></g></svg>';
+  const icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="10" width="7" height="5" rx="1"/><rect x="3" y="17" width="7" height="5" rx="1"/><path d="M6.5 8v4.5H14M6.5 17v-4.5"/></g></svg>';
   const data = `url("data:image/svg+xml,${encodeURIComponent(icon)}")`;
   sheet.textContent = `.codex-workflow-library-icon{display:inline-block;width:20px;height:20px;background:currentColor;mask:${data} center/contain no-repeat;-webkit-mask:${data} center/contain no-repeat}`;
   document.head.append(sheet);
@@ -889,7 +889,7 @@ if (!app.extensions.some(extension => extension.name === 'Codex.WorkflowLibrary'
     });
     observer.observe(document.body, { childList: true, subtree: true });
     reconcile();
-    window.__codexWorkflowLibrary = { version: '1.5.0', open: openWorkflow, openLibrary, closeLibrary, captureSnapshot, relativePath, stop, get clientId() { return CLIENT_ID; } };
+    window.__codexWorkflowLibrary = { version: '1.5.1', open: openWorkflow, openLibrary, closeLibrary, captureSnapshot, relativePath, stop, get clientId() { return CLIENT_ID; } };
     void poll();
   },
 });

@@ -1,7 +1,7 @@
 {
   "id": "workflow-library",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "author": "BBAIGC",
   "repository": "https://github.com/BBAIGC/ComfyUI-Workflow-Library",
-  "notes": "工具源码独立发布，默认空收藏，不含作者工作流或封面。"
+  "notes": "更新流程节点图标与左下角真实版本检查，发现新版本时显示红点；工具发布仍不包含个人工作流、分类或封面。"
 }

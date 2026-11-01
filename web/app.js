@@ -777,4 +777,23 @@ loadingSkeletons();
 await bootstrap({ initial: true });
 pollTimer = setInterval(() => { if (!document.hidden && $('context-menu').hidden && !document.querySelector('.workflow-card.dragging')) bootstrap(); }, 15000);
 
-$('version').onclick=()=>{ $('about-dialog').showModal(); };
+let libraryUpdatePending = null;
+function showLibraryUpdate(data) {
+  const available = data.update_available === true;
+  $('version').dataset.update = String(available);
+  $('version').title = available ? `发现新版本 V${data.latest_version}` : '关于工作流库';
+  $('about-update-state').textContent = data.error || (available ? `发现新版本 V${data.latest_version}` : `当前已是最新版本 V${data.version || state.version}`);
+  $('about-release').href = data.release_url || 'https://github.com/BBAIGC/ComfyUI-Workflow-Library/releases';
+}
+function checkLibraryUpdates() {
+  if (libraryUpdatePending) return libraryUpdatePending;
+  $('about-check-update').disabled = true;
+  $('about-update-state').textContent = '正在检查更新…';
+  libraryUpdatePending = request('/api/updates/check', { timeout: 10000 }).then(showLibraryUpdate).catch(error => {
+    $('about-update-state').textContent = error.message;
+  }).finally(() => { libraryUpdatePending = null; $('about-check-update').disabled = false; });
+  return libraryUpdatePending;
+}
+$('version').onclick = () => { $('about-dialog').showModal(); void checkLibraryUpdates(); };
+$('about-check-update').onclick = () => { void checkLibraryUpdates(); };
+void checkLibraryUpdates();

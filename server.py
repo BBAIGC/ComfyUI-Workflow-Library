@@ -27,12 +27,16 @@ from datetime import datetime, timezone
 from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlsplit
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 from media_covers import CoverError, resolve_media, prepare_image, prepare_video, VIDEO_EXTENSIONS
 from text_covers import suggestion as text_cover_suggestion, short_name as text_cover_short_name
 
-VERSION = "1.5.0"
+VERSION = "1.5.1"
 SERVICE = "comfy-workflow-library"
+REPOSITORY = "https://github.com/BBAIGC/ComfyUI-Workflow-Library"
+_UPDATE_LOCK = threading.Lock()
+_UPDATE_CACHE = {"checked_at": 0.0, "latest_version": VERSION, "update_available": False,
+                 "release_url": REPOSITORY + "/releases", "error": None}
 ROOT = Path(__file__).resolve().parent
 DEFAULT_BASE = ROOT.parent.parent if ROOT.parent.name == "custom_nodes" else ROOT.parent
 DEFAULT_WORKFLOWS = Path(os.environ.get("COMFYUI_WORKFLOWS_DIR", str(DEFAULT_BASE / "user/default/workflows")))
@@ -40,6 +44,42 @@ DESKTOP_EXE = Path(os.environ.get("COMFY_DESKTOP_EXE", str(Path(os.environ.get("
 MAX_BODY = 24 * 1024 * 1024
 MAX_WORKFLOW = 16 * 1024 * 1024
 DEFAULT_CATEGORIES = [{"id": "img", "name": "图片"}, {"id": "video", "name": "视频"}, {"id": "upscale", "name": "放大"}]
+
+
+def about_info():
+    with _UPDATE_LOCK:
+        return {"name": "ComfyUI Workflow Library", "display_name": "工作流库", "version": VERSION,
+                "repository": REPOSITORY, "author": "BBAIGC", **_UPDATE_CACHE}
+
+
+def check_updates(opener=urlopen, clock=time.monotonic):
+    """Read the fixed public release endpoint once per five minutes."""
+    with _UPDATE_LOCK:
+        if _UPDATE_CACHE["checked_at"] and clock() - _UPDATE_CACHE["checked_at"] < 300:
+            return {"version": VERSION, "repository": REPOSITORY, **_UPDATE_CACHE}
+        try:
+            request = Request("https://api.github.com/repos/BBAIGC/ComfyUI-Workflow-Library/releases/latest",
+                              headers={"User-Agent": "BBAIGC-WorkflowLibrary/" + VERSION,
+                                       "Accept": "application/vnd.github+json"})
+            with opener(request, timeout=8) as response:
+                raw = response.read(65537)
+            if len(raw) > 65536:
+                raise ValueError("release metadata too large")
+            data = json.loads(raw)
+            match = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)", str(data.get("tag_name", "")))
+            if not match:
+                raise ValueError("invalid release tag")
+            latest = ".".join(match.groups())
+            release_url = data.get("html_url", "")
+            if not isinstance(release_url, str) or not release_url.startswith(REPOSITORY + "/releases/tag/"):
+                release_url = REPOSITORY + "/releases"
+            _UPDATE_CACHE.update(latest_version=latest,
+                                 update_available=tuple(map(int, match.groups())) > tuple(map(int, VERSION.split("."))),
+                                 release_url=release_url, error=None)
+        except Exception:
+            _UPDATE_CACHE["error"] = "暂时无法检查更新，请稍后重试。"
+        _UPDATE_CACHE["checked_at"] = clock()
+        return {"version": VERSION, "repository": REPOSITORY, **_UPDATE_CACHE}
 
 
 def iso_time(timestamp=None):
@@ -1057,6 +1097,10 @@ class Handler(BaseHTTPRequestHandler):
     def route_api(self, path):
         method = self.command
         library = self.library
+        if path == "/api/about" and method == "GET":
+            return self.json(about_info())
+        if path == "/api/updates/check" and method == "GET":
+            return self.json(check_updates())
         if path == "/api/bootstrap" and method == "GET":
             workflows = library.scan()
             return self.json({"service": SERVICE, "version": VERSION, "token": library.token, "categories": library.state["categories"],
