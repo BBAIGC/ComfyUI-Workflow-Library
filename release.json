@@ -3,5 +3,5 @@
   "version": "1.5.3",
   "author": "BBAIGC",
   "repository": "https://github.com/BBAIGC/ComfyUI-Workflow-Library",
-  "notes": "更新流程节点图标与左下角真实版本检查，发现新版本时显示红点；工具发布仍不包含个人工作流、分类或封面。"
+  "notes": "更新流程节点图标与左下角版本检查，发现新版本时显示红点。"
 }

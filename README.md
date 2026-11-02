@@ -2,7 +2,7 @@
 
 ComfyUI里的快捷收藏工作区：主动收录常用工作流，按分类浏览、搜索和设置封面，双击在原生标签里打开。工具在画布区域铺满显示，保留顶部工具栏与工作流标签。
 
-**公开包只提供工具源码，不包含作者的工作流、收藏分类数据、封面或生成素材。新安装默认空白，不会自动收藏名称带Codex的文件。**
+**新安装从空白收藏开始，可拖入或导入自己的工作流。**
 
 ## 功能
 
@@ -17,7 +17,7 @@ ComfyUI里的快捷收藏工作区：主动收录常用工作流，按分类浏�
 ```text
 请安装 ComfyUI 工作流库。
 仓库：https://github.com/BBAIGC/ComfyUI-Workflow-Library
-先读README.md、AGENT_INSTALL.md和release.json，自动识别当前使用的ComfyUI实例与Python，保留原工作流、收藏、分类和封面。将工具安装到custom_nodes/ComfyUI-Workflow-Library，安装requirements.txt，不替换已工作的PyTorch，不另建第二份同名插件。公开包不含任何作者工作流，默认空库。依照说明检测启动路径、8190本机服务和左栏入口；只有新增后端节点需要下次正常重启时告诉我，不结束正在执行的任务。完成后报告实际版本、位置和真实验证结果。
+先读README.md、AGENT_INSTALL.md和release.json，自动识别当前使用的ComfyUI实例与Python，保留原工作流、收藏、分类和封面。将工具安装到custom_nodes/ComfyUI-Workflow-Library，安装requirements.txt，不替换已工作的PyTorch，不另建第二份同名插件。新安装默认空收藏。依照说明检测启动路径、8190本机服务和左栏入口；只有新增后端节点需要下次正常重启时告诉我，不结束正在执行的任务。完成后报告实际版本、位置和真实验证结果。
 ```
 
 ## 手动安装
@@ -39,17 +39,17 @@ $env:COMFYUI_WORKFLOWS_DIR = '原工作流目录'
 $env:WORKFLOW_LIBRARY_DATA_DIR = '个人库数据目录'
 ```
 
-工具不读取其他软件密钥，库服务只监听本机。首次打开为空，在界面主动拖入或导入需要的工作流即可。
+库服务只监听本机。首次打开为空，在界面主动拖入或导入需要的工作流即可。
 
 ## 更新与数据
 
-从[Releases](https://github.com/BBAIGC/ComfyUI-Workflow-Library/releases)或同来源Git仓库获取新版本。先保留个人修改，更新代码不能覆盖`user/workflow-library`。公开仓库与压缩包不应该包含`data/library.json`、分类数据、封面、输出或作者自用工作流。
+从[Releases](https://github.com/BBAIGC/ComfyUI-Workflow-Library/releases)或同来源Git仓库获取新版本。先保留个人修改，更新代码不能覆盖`user/workflow-library`。个人收藏与媒体保存在独立的数据目录。
 
 视频封面需要FFmpeg，`imageio-ffmpeg`可提供本机可执行文件。图片浏览和工作流收藏本身不执行GPU推理，不调用收费生图接口。
 
 ## 联系与支持
 
-反馈请使用[Issues](https://github.com/BBAIGC/ComfyUI-Workflow-Library/issues)，附版本和脱敏错误。以下为BBAIGC近期公开仓库原有的联系及自愿支持入口。
+反馈请使用[Issues](https://github.com/BBAIGC/ComfyUI-Workflow-Library/issues)，附版本和脱敏错误。
 
 <table><tr><th>联系作者</th><th>微信支持</th><th>支付宝支持</th></tr><tr>
 <td><img src="web/assets/wechat-contact.png" width="180" alt="联系作者"></td>
