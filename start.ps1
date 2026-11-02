@@ -21,7 +21,7 @@ function Get-LibraryStatus {
         if ($status.service -ne 'comfy-workflow-library') {
             throw '8190 端口已被其他服务占用。'
         }
-        if ([string]$status.version -ne '1.5.2') {
+        if ([string]$status.version -ne '1.5.3') {
             throw ('工作流库服务版本不匹配：' + $status.version + '。请先退出原服务再启动。')
         }
         return $status

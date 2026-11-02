@@ -12,7 +12,7 @@ from urllib.request import urlopen
 from aiohttp import web
 from server import PromptServer
 
-VERSION = "1.5.2"
+VERSION = "1.5.3"
 WEB_DIRECTORY = "./comfy_web"
 LIBRARY_URL = "http://127.0.0.1:8190"
 START_SCRIPT = Path(__file__).resolve().parent / "start.ps1"

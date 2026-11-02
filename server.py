@@ -32,7 +32,7 @@ from urllib.request import Request, urlopen
 from media_covers import CoverError, resolve_media, prepare_image, prepare_video, VIDEO_EXTENSIONS
 from text_covers import suggestion as text_cover_suggestion, short_name as text_cover_short_name
 
-VERSION = "1.5.2"
+VERSION = "1.5.3"
 SERVICE = "comfy-workflow-library"
 REPOSITORY = "https://github.com/BBAIGC/ComfyUI-Workflow-Library"
 _UPDATE_LOCK = threading.Lock()

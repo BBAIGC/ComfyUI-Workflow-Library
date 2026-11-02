@@ -1,6 +1,6 @@
 import { app } from '/scripts/app.js';
 
-// V1.5.2 — local, user-initiated workflow library integration.
+// V1.5.3 — local, user-initiated workflow library integration.
 const LIBRARY = 'http://127.0.0.1:8190';
 const INCOMING_MIME = 'application/x-codex-workflow-library';
 const OUTGOING_MIME = 'application/x-comfy-workflow';
@@ -729,7 +729,7 @@ async function libraryMessage(event) {
     libraryFrame.style.visibility = 'visible';document.getElementById('codex-workflow-library-loading')?.remove();
     const header = document.getElementById('codex-workflow-library-loading-header');
     if (header) header.style.display = 'none';
-    postLibrary('host-ready', {version:'1.5.2',clientId:CLIENT_ID});return;
+    postLibrary('host-ready', {version:'1.5.3',clientId:CLIENT_ID});return;
   }
   if (message.type === 'close') {closeLibrary();return;}
   if (message.type !== 'open') return;
@@ -889,7 +889,7 @@ if (!app.extensions.some(extension => extension.name === 'Codex.WorkflowLibrary'
     });
     observer.observe(document.body, { childList: true, subtree: true });
     reconcile();
-    window.__codexWorkflowLibrary = { version: '1.5.2', open: openWorkflow, openLibrary, closeLibrary, captureSnapshot, relativePath, stop, get clientId() { return CLIENT_ID; } };
+    window.__codexWorkflowLibrary = { version: '1.5.3', open: openWorkflow, openLibrary, closeLibrary, captureSnapshot, relativePath, stop, get clientId() { return CLIENT_ID; } };
     void poll();
   },
 });
